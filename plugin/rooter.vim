@@ -1,1 +1,1 @@
-command! Rooter lua require'rooter'.root()
+command! Root lua require'rooter'.root()

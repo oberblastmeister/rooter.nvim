@@ -62,3 +62,5 @@ rooter.set_config {
 -- setup the rooter, will not setup autocommand if manual = true
 rooter.setup()
 ```
+
+You can also root manually. You can do `:Root` which is a wrapper around `:lua require'rooter'.root()`
