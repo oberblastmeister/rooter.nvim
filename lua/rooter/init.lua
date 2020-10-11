@@ -68,7 +68,7 @@ function rooter.set_config(cfg)
 end
 
 local function create_function()
-  rooter.fn = nvim_lsp.util.root_pattern(rooter.patterns)
+  rooter.fn = nvim_lsp.util.root_pattern(rooter.config.patterns)
 end
 
 function rooter.setup()
