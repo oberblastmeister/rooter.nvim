@@ -2,7 +2,7 @@ local nvim_lsp = require('nvim_lsp')
 local api = vim.api
 
 local rooter = {
-  cmd = [[autocmd VimEnter,BufReadPost,BufEnter * ++nested lua require'rooter'.root()]],
+  cmd = [[autocmd VimEnter,BufReadPost,BufEnter * ++nested lua require'rooter'.root_async()]],
   current_working_directory = nil,
   config = {
     manual = false,
@@ -32,11 +32,23 @@ local function get_new_directory()
   end
 end
 
+function rooter.root_async()
+  vim.schedule(rooter.root)
+end
+
 function rooter.root()
   local config = rooter.config
+
+  -- do not root if in excluded filetypes
   if vim.bo.filetype == config.filetypes_exclude then
     return
   end
+
+  -- do not root on terminal buffers
+  if vim.bo.buftype == "terminal" then
+    return
+  end
+
   local new_dir = get_new_directory()
   if new_dir ~= rooter.current_working_directory then
     print("[rooter] changing directory to" .. " " .. new_dir)
