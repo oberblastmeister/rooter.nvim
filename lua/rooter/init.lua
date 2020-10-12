@@ -51,20 +51,23 @@ function rooter.root()
 
   local new_dir = get_new_directory()
   if new_dir ~= rooter.current_working_directory then
-    print("[rooter] changing directory to" .. " " .. new_dir)
+    if config.echo then
+      print("[rooter] changing directory to" .. " " .. new_dir)
+    end
     vim.cmd(config.cd_command .. " " .. new_dir)
     rooter.current_working_directory = new_dir
   end
 end
 
 local function check_config(cfg)
-  if cfg.cd_command ~= "lcd" or cfg.cd_command ~= "cd" or cfg.cd_command ~= "tcd" then
-    api.nvim_err_writeln(string.format("%s is not a valid cd_command (must be cd, lcd, or tcd)", cd_command))
+  if not (cfg.cd_command == "lcd" or cfg.cd_command == "cd" or cfg.cd_command == "tcd") then
+    api.nvim_err_writeln(string.format("%s is not a valid cd_command (must be cd, lcd, or tcd)", cfg.cd_command))
     return false
   else
     return true
   end
-  if cfg.non_project_files ~= 'current' or cfg.non_project_files ~= 'home' then
+
+  if not (cfg.non_project_files == 'current' or cfg.non_project_files == 'home') then
     api.nvim_err_writeln(string.format("%s is not a valid value to non_project_files (must be home or current)", cfg.non_project_files))
     return false
   else
@@ -73,9 +76,12 @@ local function check_config(cfg)
 end
 
 function rooter.set_config(cfg)
-  local new_config = vim.tbl("keep", cfg, rooter.config)
+  local new_config = vim.tbl_extend("force", rooter.config, cfg)
+  -- print(vim.inspect(new_config))
   if check_config(new_config) then
     rooter.config = new_config
+  else
+    api.nvim_err_writeln("There were errors when setting the config. Keeping default values.")
   end
 end
 
