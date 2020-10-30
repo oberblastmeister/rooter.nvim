@@ -30,15 +30,13 @@ Initialize with default values and setup autocommand:
 require'rooter'.setup()
 ```
 
-To use different configuration values, call `rooter.set_config(cfg)` before calling `rooter.setup()`
+To use different configuration values, call `rooter.setup(cfg)`, to override default values
 
 Example:
 
 ```lua
-local rooter = require("rooter")
-
 -- these are all of the default values
-rooter.set_config {
+require'rooter'.setup {
     manual = false, -- weather to setup autocommand to root every time a file is opened
     echo = true, -- echo every time rooter is triggered
     patterns = { -- the patterns to find
@@ -58,9 +56,6 @@ rooter.set_config {
       return vim.fn.expand [[%:p:h]]
     end,
 }
-
--- setup the rooter, will not setup autocommand if manual = true
-rooter.setup()
 ```
 
 You can also root manually. You can do `:Root` which is a wrapper around `:lua require'rooter'.root()`
