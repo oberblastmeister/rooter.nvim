@@ -1,4 +1,4 @@
-local nvim_lsp = require('lspconfig')
+local lspconfig = require('lspconfig')
 local api = vim.api
 
 local M = {}
@@ -25,7 +25,7 @@ do
   }
 
   local function create_root_fn()
-    root_fn = nvim_lsp.util.root_pattern(config.patterns)
+    root_fn = lspconfig.util.root_pattern(config.patterns)
   end
 
   local function check_config(cfg)
