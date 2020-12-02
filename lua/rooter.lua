@@ -1,4 +1,5 @@
 local lspconfig = require('lspconfig')
+local vim = vim
 local api = vim.api
 
 local M = {}
@@ -7,7 +8,6 @@ local current_working_directory
 local root_fn
 local config
 local setup_config
-
 do
   local default_config = {
     manual = false,
@@ -19,6 +19,11 @@ do
     },
     cd_command = 'lcd',
     non_project_files = "current",
+    filetypes_exclude = {
+      "terminal",
+      "quickfix",
+      "LuaTree",
+    },
     start_path = function()
       return vim.fn.expand [[%:p:h]]
     end,
@@ -79,20 +84,16 @@ end
 
 function M.root()
   -- do not root if in excluded filetypes
-  if vim.bo.filetype == config.filetypes_exclude then
-    return
-  end
+  local curr_filetype = vim.bo.filetype
 
-  -- do not root on terminal buffers
-  if vim.bo.buftype == "terminal" then
-    return
+  for _, exclude_filetype in pairs(config.filetypes_exclude or {}) do
+    if curr_filetype == exclude_filetype then return end
   end
 
   local new_dir = get_new_directory()
 
-  if new_dir == current_working_directory then
-    return
-  end
+  if new_dir == current_working_directory then return end
+  if new_dir == nil or new_dir == "" then return end
 
   if config.echo then
     print("[rooter] changing directory to" .. " " .. new_dir)
